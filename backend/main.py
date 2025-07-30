@@ -1,118 +1,125 @@
-# backend/main.py
+# /backend/main.py
 
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Dict, Any
+from typing import List, Dict, Optional
+from uuid import uuid4
+from fastapi.middleware.cors import CORSMiddleware
 import httpx
-import openai
-import os
-import uuid
-
-# Load API Key securely
-from dotenv import load_dotenv
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
 
-# CORS for frontend
+# Allow frontend CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to frontend domain in production
-    allow_credentials=True,
+    allow_origins=["*"],  # change to your frontend domain in production
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# In-memory storage (use a database in production)
-WORKFLOWS = {}
+# In-memory store
+WORKFLOWS: Dict[str, Dict] = {}
 
-class NodeData(BaseModel):
-    label: str
-
+# Pydantic Models
 class Node(BaseModel):
     id: str
     type: str
-    data: NodeData
-    position: Dict[str, float]
+    data: dict
+    position: Optional[dict]
 
 class Edge(BaseModel):
-    id: str = None
+    id: Optional[str]
     source: str
     target: str
+    sourceHandle: Optional[str] = None
+    targetHandle: Optional[str] = None
 
 class Workflow(BaseModel):
     name: str
-    graph: Dict[str, Any]  # contains 'nodes' and 'edges'
+    graph: dict  # contains "nodes" and "edges"
 
+# Save workflow
 @app.post("/api/workflows")
-def save_workflow(workflow: Workflow):
-    workflow_id = str(uuid.uuid4())
-    WORKFLOWS[workflow_id] = workflow.graph
+async def save_workflow(workflow: Workflow):
+    workflow_id = str(uuid4())
+    WORKFLOWS[workflow_id] = {
+        "id": workflow_id,
+        "name": workflow.name,
+        "graph": workflow.graph,
+        "log": []
+    }
     return {"id": workflow_id}
 
+# Get workflow by ID
+@app.get("/api/workflows/{workflow_id}")
+async def get_workflow(workflow_id: str):
+    wf = WORKFLOWS.get(workflow_id)
+    if not wf:
+        raise HTTPException(status_code=404, detail="Workflow not found")
+    return wf
+
+# Execute a workflow
 @app.post("/api/workflows/{workflow_id}/execute")
 async def execute_workflow(workflow_id: str):
-    graph = WORKFLOWS.get(workflow_id)
-    if not graph:
+    wf = WORKFLOWS.get(workflow_id)
+    if not wf:
         raise HTTPException(status_code=404, detail="Workflow not found")
 
-    nodes = {node["id"]: node for node in graph["nodes"]}
-    edges = graph.get("edges", [])
-    execution_log = []
+    nodes = {node["id"]: node for node in wf["graph"]["nodes"]}
+    edges = wf["graph"]["edges"]
 
-    # Build execution order based on edges
-    visited = set()
-    def dfs(node_id):
-        if node_id in visited:
-            return
-        visited.add(node_id)
-        for edge in edges:
-            if edge["source"] == node_id:
-                dfs(edge["target"])
-        execution_order.append(node_id)
+    execution_order = resolve_execution_order(nodes, edges)
+    log = []
 
-    execution_order = []
-    start_nodes = [n for n in nodes.values() if n["type"] == "input"]
-    for n in start_nodes:
-        dfs(n["id"])
-    execution_order.reverse()
-
-    context = {}  # Store outputs from each node
     for node_id in execution_order:
         node = nodes[node_id]
-        label = node["data"].get("label", "")
-        result = None
-
-        if label == "HTTP Request":
+        if node["type"] == "HTTP Request":
             try:
-                url = node["data"].get("url", "https://api.github.com")
                 method = node["data"].get("method", "GET")
+                url = node["data"].get("url", "")
                 async with httpx.AsyncClient() as client:
                     resp = await client.request(method, url)
-                    result = resp.text
-                    execution_log.append(f"[HTTP] {method} {url} → {resp.status_code}")
+                    log.append(f"[HTTP] {method} {url} -> {resp.status_code}")
             except Exception as e:
-                result = str(e)
-                execution_log.append(f"[HTTP] Error: {str(e)}")
+                log.append(f"[ERROR] HTTP Request failed: {str(e)}")
 
-        elif label == "AI Prompt":
+        elif node["type"] == "AI Prompt":
             try:
-                prompt = node["data"].get("prompt", "Say hello!")
-                response = openai.ChatCompletion.create(
-                    model="gpt-4",
-                    messages=[{"role": "user", "content": prompt}]
-                )
-                result = response.choices[0].message["content"]
-                execution_log.append(f"[AI] Prompt → {result[:60]}...")
+                prompt = node["data"].get("prompt", "")
+                # Simulate AI response (replace with OpenAI API later)
+                response = f"Simulated response to: {prompt}"
+                log.append(f"[AI] {prompt} => {response}")
             except Exception as e:
-                result = str(e)
-                execution_log.append(f"[AI] Error: {str(e)}")
+                log.append(f"[ERROR] AI Prompt failed: {str(e)}")
 
         else:
-            execution_log.append(f"[{label}] Skipped or unknown type")
+            log.append(f"[WARN] Unknown node type: {node['type']}")
 
-        context[node_id] = result
+    wf["log"] = log
+    return {"log": log}
 
-    return {"log": execution_log, "outputs": context}
+# Helper: Determine execution order from edges
+def resolve_execution_order(nodes: dict, edges: list) -> List[str]:
+    from collections import defaultdict, deque
+
+    graph = defaultdict(list)
+    in_degree = {node_id: 0 for node_id in nodes}
+
+    for edge in edges:
+        src = edge["source"]
+        tgt = edge["target"]
+        graph[src].append(tgt)
+        in_degree[tgt] += 1
+
+    queue = deque([n for n in nodes if in_degree[n] == 0])
+    order = []
+
+    while queue:
+        node = queue.popleft()
+        order.append(node)
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+
+    return order
