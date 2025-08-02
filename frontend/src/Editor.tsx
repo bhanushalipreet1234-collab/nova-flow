@@ -1,4 +1,4 @@
-// NovaFlow Frontend: Editor.tsx
+// Editor.tsx
 import React, { useCallback, useState } from "react";
 import ReactFlow, {
   addEdge,
@@ -17,7 +17,6 @@ import { nanoid } from "nanoid";
 import { toast } from "react-hot-toast";
 import AiNode from "./nodes/AiNode";
 import HttpNode from "./nodes/HttpNode";
-import "./index.css";
 
 const initialNodes = [
   {
