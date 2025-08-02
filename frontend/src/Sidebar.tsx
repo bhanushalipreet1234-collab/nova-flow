@@ -1,36 +1,63 @@
-// Sidebar.tsx - NovaFlow Sidebar Component
 // Location: /frontend/src/components/Sidebar.tsx
 
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, PenTool } from "lucide-react";
+import {
+  LayoutDashboard,
+  PenTool,
+  Settings,
+  BookOpen,
+} from "lucide-react";
+
+const menuItems = [
+  {
+    name: "Dashboard",
+    path: "/dashboard",
+    icon: <LayoutDashboard size={20} />,
+  },
+  {
+    name: "Editor",
+    path: "/editor",
+    icon: <PenTool size={20} />,
+  },
+  {
+    name: "Docs",
+    path: "/docs",
+    icon: <BookOpen size={20} />,
+  },
+  {
+    name: "Settings",
+    path: "/settings",
+    icon: <Settings size={20} />,
+  },
+];
 
 export default function Sidebar() {
   const location = useLocation();
 
-  const navItems = [
-    { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/dashboard" },
-    { name: "Editor", icon: <PenTool size={20} />, path: "/editor" },
-  ];
-
   return (
-    <div className="w-64 bg-white border-r shadow-md min-h-screen p-5">
-      <h1 className="text-2xl font-bold mb-8">NovaFlow</h1>
-      <ul className="space-y-4">
-        {navItems.map((item) => (
-          <li key={item.name}>
+    <div className="w-64 bg-white border-r border-gray-200 min-h-screen p-4">
+      <h1 className="text-xl font-bold mb-6 px-2 text-gray-800">Nova Flow</h1>
+      <nav className="space-y-1">
+        {menuItems.map((item) => {
+          const isActive = location.pathname === item.path;
+
+          return (
             <Link
+              key={item.name}
               to={item.path}
-              className={`flex items-center gap-3 p-2 rounded-lg transition-colors text-sm font-medium hover:bg-gray-100 ${
-                location.pathname === item.path ? "bg-gray-200 text-blue-600" : "text-gray-700"
+              className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                isActive
+                  ? "bg-blue-100 text-blue-600"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
               }`}
             >
-              {item.icon}
+              <span className="mr-3">{item.icon}</span>
               {item.name}
             </Link>
-          </li>
-        ))}
-      </ul>
+          );
+        })}
+      </nav>
     </div>
   );
 }
