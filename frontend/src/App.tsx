@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./Dashboard";
 import Editor from "./Editor";
-import Sidebar from "./components/Sidebar";
+import Sidebar from "./Sidebar";
 
 export default function App() {
   return (
