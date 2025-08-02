@@ -1,4 +1,4 @@
-// NovaFlow Frontend: App.tsx
+// NovaFlow Frontend: App.tsx (with canvas-based editor layout)
 // Location: /frontend/src/App.tsx
 
 import React from "react";
@@ -12,11 +12,8 @@ export default function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100 font-sans flex">
-        {/* Sidebar Navigation */}
         <Sidebar />
-        
-        {/* Main Content Area */}
-        <div className="flex-1 p-4">
+        <div className="flex-1 h-screen overflow-hidden">
           <Toaster position="top-right" />
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" />} />
