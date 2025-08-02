@@ -1,6 +1,4 @@
-// NovaFlow Frontend: Editor.tsx (with drag-and-drop sidebar and custom node types)
-// Location: /frontend/src/Editor.tsx
-
+// NovaFlow Frontend: Editor.tsx (enhanced layout like n8n)
 import React, { useCallback, useState } from "react";
 import { BackgroundVariant } from 'reactflow';
 import ReactFlow, {
@@ -40,19 +38,22 @@ export default function Editor() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [id, setId] = useState(2);
 
-  const onConnect = useCallback((connection: Connection) => {
-    setEdges((eds) =>
-      addEdge(
-        {
-          ...connection,
-          markerEnd: {
-            type: MarkerType.ArrowClosed,
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      setEdges((eds) =>
+        addEdge(
+          {
+            ...connection,
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+            },
           },
-        },
-        eds
-      )
-    );
-  }, [setEdges]);
+          eds
+        )
+      );
+    },
+    [setEdges]
+  );
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -77,36 +78,68 @@ export default function Editor() {
   };
 
   return (
-    <div className="flex h-full">
-      {/* Sidebar */}
-      <div className="w-64 bg-white border-r p-4">
-        <h2 className="text-lg font-semibold mb-2">Nodes</h2>
-        {availableNodes.map((node) => (
-          <div
-            key={node.type}
-            draggable
-            onDragStart={(e) => e.dataTransfer.setData("application/reactflow", node.type)}
-            className="cursor-move bg-blue-100 hover:bg-blue-200 p-2 rounded mb-2 text-sm text-center"
-          >
-            {node.label}
-          </div>
-        ))}
+    <div className="flex flex-col h-screen">
+      {/* Top Navbar */}
+      <div className="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
+        <div className="text-xl font-semibold">NovaFlow</div>
+        <div className="space-x-4">
+          <button className="bg-gray-700 px-3 py-1 rounded">Editor</button>
+          <button className="bg-gray-700 px-3 py-1 rounded">Executions</button>
+          <button className="bg-blue-600 px-3 py-1 rounded">Save</button>
+        </div>
       </div>
 
-      {/* Canvas */}
-      <div className="flex-1 h-screen" onDrop={handleDrop} onDragOver={handleDragOver}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          fitView
+      {/* Main Body */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar */}
+        <div className="w-64 bg-white border-r p-4 overflow-y-auto">
+          <h2 className="text-lg font-semibold mb-2">Nodes</h2>
+          {availableNodes.map((node) => (
+            <div
+              key={node.type}
+              draggable
+              onDragStart={(e) =>
+                e.dataTransfer.setData("application/reactflow", node.type)
+              }
+              className="cursor-move bg-blue-100 hover:bg-blue-200 p-2 rounded mb-2 text-sm text-center"
+            >
+              {node.label}
+            </div>
+          ))}
+        </div>
+
+        {/* Canvas */}
+        <div
+          className="flex-1 relative bg-gray-50"
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
         >
-          <MiniMap />
-          <Controls />
-          <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-        </ReactFlow>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            fitView
+          >
+            <MiniMap />
+            <Controls />
+            <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+          </ReactFlow>
+        </div>
+
+        {/* Right Panel */}
+        <div className="w-72 bg-white border-l p-4 overflow-y-auto">
+          <h2 className="text-lg font-semibold mb-3">What happens next?</h2>
+          <ul className="text-sm space-y-2">
+            <li className="font-medium">🤖 AI: Build autonomous agents</li>
+            <li className="font-medium">⚙️ Action: Trigger apps like Google, Slack</li>
+            <li className="font-medium">🧠 Transform: Format or validate data</li>
+            <li className="font-medium">🔁 Flow: Loops, branches, conditions</li>
+            <li className="font-medium">👨‍💼 Human: Approvals or manual review</li>
+            <li className="font-medium">⏱ Trigger: Start the flow</li>
+          </ul>
+        </div>
       </div>
     </div>
   );
