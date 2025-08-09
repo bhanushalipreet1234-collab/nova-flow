@@ -1,8 +1,10 @@
 {
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
-    "@types/node": "^24.1.0",
     "lucide-react": "^0.536.0",
     "reactflow": "^11.11.4"
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.1"
   }
 }
