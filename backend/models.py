@@ -3,12 +3,12 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.sql import func
 from .db import Base
 
-class UserAPIKey(Base):
-    __tablename__ = "user_api_keys"
+class APIKey(Base):
+    __tablename__ = "api_keys"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(String, index=True)  # Could be email, UUID, or session ID
-    service_name = Column(String, index=True)  # e.g., "openai", "serpapi", "custom_api"
-    api_key = Column(String)  # You can encrypt this before storing
+    user_id = Column(String, index=True)           # Could be user UUID/email/session id
+    service_name = Column(String, index=True)      # e.g., "openai", "openweather"
+    api_key = Column(String)                       # Stored as plaintext here; encrypt in prod
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

@@ -1,17 +1,19 @@
+# backend/main.py
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Any
 import os
+
 from .db import Base, engine
-from .routes import settings
+from .routes import api_keys   # ensure this points to your routes module name
 from .executor import execute_graph
 
-# Create DB tables
+# Create DB tables (run on startup)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-app.include_router(settings.router, prefix="/api/settings")
+app.include_router(api_keys.router)   # mount route prefix in router file
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,6 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# payload models as earlier...
 class NodeModel(BaseModel):
     id: str
     type: str
