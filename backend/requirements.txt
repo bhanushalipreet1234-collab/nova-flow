@@ -1,4 +1,9 @@
 fastapi
 uvicorn[standard]
-aiohttp
+sqlalchemy
+alembic
+databases
+pydantic
 python-dotenv
+cryptography
+aiohttp
