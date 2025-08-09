@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { nodeTypesList } from "./nodes/nodetype";
-
 export default function Sidebar() {
   const [search, setSearch] = useState("");
 
