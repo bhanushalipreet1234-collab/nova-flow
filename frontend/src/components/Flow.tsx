@@ -80,3 +80,17 @@ export const Flow = () => {
     </div>
   );
 };
+import { AINodeGenerator } from './AINodeGenerator'
+
+export function Flow() {
+  const [nodes, setNodes] = useState([])
+
+  return (
+    <div className="flow-container">
+      <ReactFlow nodes={nodes}>
+        {/* Your existing flow content */}
+      </ReactFlow>
+      <AINodeGenerator onAddNode={(node) => setNodes(nds => [...nds, node])} />
+    </div>
+  )
+}
