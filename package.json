@@ -2,7 +2,9 @@
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
     "lucide-react": "^0.536.0",
-    "reactflow": "^11.11.4"
+    "openai-edge": "^1.2.3",
+    "reactflow": "^11.11.4",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^24.2.1"

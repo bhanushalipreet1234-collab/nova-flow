@@ -374,6 +374,11 @@ lucide-react@^0.536.0:
   resolved "https://registry.npmjs.org/lucide-react/-/lucide-react-0.536.0.tgz"
   integrity sha512-2PgvNa9v+qz4Jt/ni8vPLt4jwoFybXHuubQT8fv4iCW5TjDxkbZjNZZHa485ad73NSEn/jdsEtU57eE1g+ma8A==
 
+openai-edge@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.npmjs.org/openai-edge/-/openai-edge-1.2.3.tgz"
+  integrity sha512-CnEm2VbPSng1S9N/OFWmRmFC5Rm+pNID+7KYR6aIPJEnCXoH6CHzdBH6s+rLH+JGt0zuWmpC7NHMXED2dpZqPg==
+
 react-dom@>=17:
   version "19.1.1"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-19.1.1.tgz"
@@ -412,6 +417,11 @@ use-sync-external-store@^1.2.2:
   version "1.5.0"
   resolved "https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.5.0.tgz"
   integrity sha512-Rb46I4cGGVBmjamjphe8L/UnvJD+uPPtTkNvX5mZgqdbavhI4EbgIWJiIHXJ8bc/i9EQGPRh4DwEURJ552Do0A==
+
+zod@^3.22.4:
+  version "3.22.4"
+  resolved "https://registry.npmjs.org/zod/-/zod-3.22.4.tgz"
+  integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==
 
 zustand@^4.4.1:
   version "4.5.7"
