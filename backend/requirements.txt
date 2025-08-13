@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+alembic
+databases
+pydantic
+python-dotenv
+cryptography
+aiohttp
