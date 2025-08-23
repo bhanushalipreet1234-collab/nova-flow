@@ -1,4 +1,4 @@
-# inside executor.py
+﻿# inside executor.py
 from .db import SessionLocal
 from .models import NodeKey
 from .security import decrypt_text
@@ -21,3 +21,10 @@ if node_specific_key:
 else:
     # fallback to user global keys or env
     ...
+
+from .nodes.http_node import HTTPNode
+
+NODE_REGISTRY = {
+    "http": HTTPNode,
+}
+

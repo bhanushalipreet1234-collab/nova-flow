@@ -1,4 +1,4 @@
-# backend/main.py
+﻿# backend/main.py
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -44,5 +44,7 @@ async def execute(payload: GraphPayload, x_user_id: str = Header(None)):
         raise HTTPException(status_code=400, detail="X-User-Id header required")
     result = await execute_graph([n.dict() for n in payload.nodes], [e.dict() for e in payload.edges], x_user_id)
     return {"outputs": result}
-from .routes import node_keys
+from .routes import node_keys, curl_api
 app.include_router(node_keys.router)
+app.include_router(curl_api.router)
+

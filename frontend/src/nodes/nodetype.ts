@@ -1,3 +1,4 @@
+﻿import HttpNode from "./HttpNode";
 export interface NodeType {
   type: string;
   label: string;
@@ -8,3 +9,4 @@ export const nodeTypesList: NodeType[] = [
   { type: "httpRequest", label: "HTTP Request" },
   { type: "dataTransform", label: "Data Transform" }
 ];
+
