@@ -47,7 +47,7 @@ export default function HttpNode({ id, data }: any) {
     <div className="node http-node">
       <Handle type="target" position={Position.Top} />
       <div className="node-content">
-        <h4>HTTP Node</h4>
+        <h4>HTTP Node 🚀</h4>
         <p><strong>{data.method || "GET"}</strong> {data.url || "No URL set"}</p>
         <button className="btn-small" onClick={() => setShowDialog(true)}>⚙️ Configure (curl)</button>
       </div>
