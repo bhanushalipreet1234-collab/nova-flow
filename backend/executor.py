@@ -1,4 +1,6 @@
-# backend/executor.py
-# Clean reset: empty registry
+from .nodes.base_node import BaseNode
+from .nodes.hello_node import HelloNode
 
-NODE_REGISTRY = {}
+NODE_REGISTRY = {
+    "hello": HelloNode
+}

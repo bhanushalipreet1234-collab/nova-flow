@@ -1,16 +1,7 @@
-import React from "react";
-import Sidebar from "./Sidebar";
-import Editor from "./Editor";
-import { ReactFlowProvider } from "reactflow";
-import "reactflow/dist/style.css";
-
 export default function App() {
   return (
-    <ReactFlowProvider>
-      <div style={{ display: "flex" }}>
-        <Sidebar />
-        <Editor />
-      </div>
-    </ReactFlowProvider>
-  );
+    <div className="p-4">
+      <h1 className="text-2xl font-bold">NovaFlow</h1>
+    </div>
+  )
 }
